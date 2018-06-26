@@ -1,0 +1,9 @@
+body {
+    font-family: 'Open Sans', sans-serif;
+}
+
+.map-container {
+    height: 500px;
+    width: 900px;
+}
+
