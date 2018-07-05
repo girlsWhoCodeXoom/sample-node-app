@@ -13,8 +13,11 @@ module.exports = (data1, data2) => {
     function getAdditionalCountryInformation(countryCodeXoom, countryItem) {
         for (y in countryDataOtherApi.Response ) {
             if (countryCodeXoom === countryDataOtherApi.Response[y].Alpha2Code) {
-                Object.assign(countryItem, {countryItemName: countryDataOtherApi.Response[y].Name} );
-                //Add countryItemFlag: countryDataOtherApi.Response[y].Flag to above Object
+                Object.assign(countryItem, {countryItemName: countryDataOtherApi.Response[y].Name},
+                    {countryItemLatitude: countryDataOtherApi.Response[y].Latitude},
+                    {countryItemLongitude: countryDataOtherApi.Response[y].Longitude},
+                    {countryItemFlag: countryDataOtherApi.Response[y].Flag}
+                );
             }
         }
     }
@@ -32,11 +35,7 @@ module.exports = (data1, data2) => {
 
         countryItems.push(countryItem);
 
-
-
     }
-
-    console.log(countryItems);
 
     return countryItems;
 };

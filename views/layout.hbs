@@ -1,72 +1,15 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <!--CUSTOMIZE FONT BY CHOOSING A DIFFERENT ONE FROM FONTS.GOOGLE.COM-->
     <link href="https://fonts.googleapis.com/css?family=Open+Sans" type="text/css" rel="stylesheet">
     <link href="/css/layout.css" type="text/css" rel="stylesheet" />
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript" src="/js/maps.js"></script>
     <script type="text/javascript">
-        <!--CUSTOMIZE MAP COLORS-->
-        var options = {
-            colorAxis: {colors: ['#FFE4CC', '#FFC38F', '#FFA352']},
-            backgroundColor: '#CCE7FF',
-            datalessRegionColor: '#CEFFCC',
-            defaultColor: '#D16200',
-            legend: {textStyle: {color: 'blue', fontSize: 16}},
-            tooltip: {isHtml: true}};
 
-        google.charts.load('current', {
-            'packages':['corechart'],
-            'mapsApiKey': 'AIzaSyD-9tSrke72PouQMnMX-a7eZSW0jkFMBWY'
-        });
+        var apiData="{{#each data}}{{countryItemLatitude}},{{countryItemLongitude}}/{{/each}}";
+        maps.init(apiData);
 
-        google.charts.setOnLoadCallback(drawRegionsMap);
-
-        function drawRegionsMap() {
-            var data = google.visualization.arrayToDataTable([
-                ['Country','Country Code','Number of Disbursement Options', {role: 'tooltip', p:{html:true}}],
-                {{#each data}}
-                    ['{{countryItemCountryCode}}','{{countryItemName}}',{{countryItemDisbursementTypeCount}},'{{countryItemDisbursementOptions}}'],
-                {{/each}}
-             ]),
-             regionsMap = new google.visualization.GeoChart(document.getElementById('js-regions-container'));
-
-             regionsMap.draw(data, options);
-
-             addListenerToRegionsMap(regionsMap, data);
-        }
-
-        function addListenerToRegionsMap(regionsMap, data) {
-            google.visualization.events.addListener(regionsMap, 'select', function() {
-                var selection = regionsMap.getSelection();
-
-                if (selection.length > 0) {
-                    var selectedCountry = data.getFormattedValue(selection[0].row, 0);
-                    selectedCountryName = data.getFormattedValue(selection[0].row, 1),
-                    selectedCountryDisbursementCount = data.getFormattedValue(selection[0].row, 2),
-                    selectedCountryDisbursementTypes = data.getFormattedValue(selection[0].row, 3),
-                    formattedSelectedCountryDisbursementTypes = selectedCountryDisbursementTypes.toLowerCase().replace(new RegExp(',', 'g'),', ');
-
-                    drawCountryMap(selectedCountry, selectedCountryName, selectedCountryDisbursementCount, formattedSelectedCountryDisbursementTypes);
-                }
-            });
-        }
-
-        function drawCountryMap(selectedCountry, selectedCountryName, selectedCountryDisbursementCount, selectedCountryDisbursementTypes) {
-            var serviceCount = selectedCountryDisbursementCount > 1 ? selectedCountryDisbursementCount + " services" : selectedCountryDisbursementCount + " service",
-                countryTooltipLabel = selectedCountryName + " has " + serviceCount + ": ",
-                countryData = google.visualization.arrayToDataTable([
-                ['Country', 'Number of Disbursement Options',  {role: 'tooltip', p:{html:true}}],
-                [selectedCountry,countryTooltipLabel,selectedCountryDisbursementTypes]
-            ]),
-            countryMap = new google.visualization.GeoChart(document.getElementById('js-country-container'));
-
-            options.region = selectedCountry;
-
-            countryMap.draw(countryData, options);
-
-            document.getElementById("js-country-heading").textContent = countryTooltipLabel + ' ' + selectedCountryDisbursementTypes;
-        }
     </script>
   </head>
   <body>
