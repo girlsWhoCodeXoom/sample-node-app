@@ -1,18 +1,81 @@
 <!DOCTYPE html>
 <html>
-  <head>
+    <head>
     <link href="https://fonts.googleapis.com/css?family=Open+Sans" type="text/css" rel="stylesheet">
     <link href="/css/layout.css" type="text/css" rel="stylesheet" />
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-    <script type="text/javascript" src="/js/maps.js"></script>
     <script type="text/javascript">
+        (function () {
+            "use strict";
 
-        var apiData="{{#each data}}{{countryItemLatitude}},{{countryItemLongitude}}/{{/each}}";
-        maps.init(apiData);
+            google.charts.load('current', { 'packages': ['map'], 'mapsApiKey': 'AIzaSyCK0nnkg19MONGuo82bmvHMC4AUAlt_NRY' });
+            google.charts.setOnLoadCallback(drawWorldMap);
 
+            function drawWorldMap() {
+                var worldMapOptions = {
+                    zoomLevel: 2,
+                    showTooltip: false,
+                    showInfoWindow: false,
+                    useMapTypeControl: true
+                    },
+                    worldMap = new google.visualization.Map(document.getElementById('js-world-map-container')),
+                    worldMapDataTable = new google.visualization.DataTable();
+
+
+                worldMapDataTable.addColumn('number', 'Latitude');
+                worldMapDataTable.addColumn('number', 'Longitude');
+
+                worldMapDataTable.addRows([
+                    {{#each data}}
+                        [{{countryItemLatitude}},{{countryItemLongitude}}],
+                    {{/each}}
+                ]);
+
+                worldMap.draw(worldMapDataTable, worldMapOptions);
+
+                addListenerToWorldMap(worldMap, worldMapDataTable);
+            }
+
+            function addListenerToWorldMap(worldMap, data) {
+                google.visualization.events.addListener(worldMap, 'select', function () {
+                    var selection = worldMap.getSelection();
+
+                    if (selection.length > 0) {
+                        var selectedCountryLatitude = data.getFormattedValue(selection[0].row, 0),
+                            selectedCountryLongitude = data.getFormattedValue(selection[0].row, 1);
+
+                        drawCountryMap(selectedCountryLatitude, selectedCountryLongitude);
+                    }
+                });
+            }
+
+            function drawCountryMap(selectedCountryLatitude, selectedCountryLongitude) {
+                var countryMapOptions = {
+                        zoomLevel: 5,
+                        showTooltip: true,
+                        showInfoWindow: true,
+                        useMapTypeControl: true,
+                        icons: {
+                            default: {
+                                normal: 'https://icons.iconarchive.com/icons/icons-land/vista-map-markers/48/Map-Marker-Ball-Azure-icon.png',
+                                selected: 'https://icons.iconarchive.com/icons/icons-land/vista-map-markers/48/Map-Marker-Ball-Right-Azure-icon.png'
+                            }
+                        },
+                    },
+                    countryMap = new google.visualization.Map(document.getElementById('js-country-map-container')),
+                    countryMapDataTable = new google.visualization.DataTable(),
+                    latitudeLongitudeArray = [selectedCountryLatitude, selectedCountryLongitude].map(Number);
+
+                countryMapDataTable.addColumn('number', 'Latitude');
+                countryMapDataTable.addColumn('number', 'Longitude');
+                countryMapDataTable.addRow(latitudeLongitudeArray);
+
+                countryMap.draw(countryMapDataTable, countryMapOptions);
+            }
+        }());
     </script>
-  </head>
-  <body>
-    {{{body}}}
-  </body>
+    </head>
+    <body>
+        {{{body}}}
+    </body>
 </html>

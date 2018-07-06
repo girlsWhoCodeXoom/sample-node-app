@@ -13,10 +13,9 @@ module.exports = (data1, data2) => {
     function getAdditionalCountryInformation(countryCodeXoom, countryItem) {
         for (y in countryDataOtherApi.Response ) {
             if (countryCodeXoom === countryDataOtherApi.Response[y].Alpha2Code) {
-                Object.assign(countryItem, {countryItemName: countryDataOtherApi.Response[y].Name},
+                Object.assign(countryItem,
                     {countryItemLatitude: countryDataOtherApi.Response[y].Latitude},
-                    {countryItemLongitude: countryDataOtherApi.Response[y].Longitude},
-                    {countryItemFlag: countryDataOtherApi.Response[y].Flag}
+                    {countryItemLongitude: countryDataOtherApi.Response[y].Longitude}
                 );
             }
         }
@@ -26,9 +25,7 @@ module.exports = (data1, data2) => {
         countryDataXoomEntry = countryDataXoom.data.countries[x];
 
         const countryItem = {
-            countryItemCountryCode: countryDataXoomEntry.countryCode,
-            countryItemDisbursementTypeCount: countryDataXoomEntry.disbursementTypes.length,
-            countryItemDisbursementOptions: countryDataXoomEntry.disbursementTypes.toString()
+            countryItemCountryCode: countryDataXoomEntry.countryCode
         }
 
         getAdditionalCountryInformation(countryDataXoomEntry.countryCode, countryItem);
