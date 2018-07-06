@@ -15,7 +15,9 @@ module.exports = (data1, data2) => {
             if (countryCodeXoom === countryDataOtherApi.Response[y].Alpha2Code) {
                 Object.assign(countryItem,
                     {countryItemLatitude: countryDataOtherApi.Response[y].Latitude},
-                    {countryItemLongitude: countryDataOtherApi.Response[y].Longitude}
+                    {countryItemLongitude: countryDataOtherApi.Response[y].Longitude}/*,
+                    {countryItemName: countryDataOtherApi.Response[y].Name},
+                    {countryItemFlag: countryDataOtherApi.Response[y].Flag}*/
                 );
             }
         }

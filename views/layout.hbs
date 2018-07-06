@@ -8,6 +8,9 @@
         (function () {
             "use strict";
 
+            /*var countryName,
+                countryFlag;*/
+
             google.charts.load('current', { 'packages': ['map'], 'mapsApiKey': 'AIzaSyCK0nnkg19MONGuo82bmvHMC4AUAlt_NRY' });
             google.charts.setOnLoadCallback(drawWorldMap);
 
@@ -21,15 +24,16 @@
                     worldMap = new google.visualization.Map(document.getElementById('js-world-map-container')),
                     worldMapDataTable = new google.visualization.DataTable();
 
-
                 worldMapDataTable.addColumn('number', 'Latitude');
                 worldMapDataTable.addColumn('number', 'Longitude');
 
-                worldMapDataTable.addRows([
-                    {{#each data}}
+                {{#each data}}
+                    worldMapDataTable.addRows([
                         [{{countryItemLatitude}},{{countryItemLongitude}}],
-                    {{/each}}
-                ]);
+                    ]);
+                    /*countryName = "{{countryItemName}}";
+                    countryFlag = "{{countryItemFlag}}";*/
+                {{/each}}
 
                 worldMap.draw(worldMapDataTable, worldMapOptions);
 
@@ -65,12 +69,15 @@
                     countryMap = new google.visualization.Map(document.getElementById('js-country-map-container')),
                     countryMapDataTable = new google.visualization.DataTable(),
                     latitudeLongitudeArray = [selectedCountryLatitude, selectedCountryLongitude].map(Number);
+                    /*countryMapHeading = document.getElementById("js-country-heading");*/
 
                 countryMapDataTable.addColumn('number', 'Latitude');
                 countryMapDataTable.addColumn('number', 'Longitude');
                 countryMapDataTable.addRow(latitudeLongitudeArray);
 
                 countryMap.draw(countryMapDataTable, countryMapOptions);
+
+                /*countryMapHeading.innerText = countryName;*/
             }
         }());
     </script>
