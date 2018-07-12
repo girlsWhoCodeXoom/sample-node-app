@@ -8,9 +8,6 @@
         (function () {
             "use strict";
 
-            /*var countryName,
-                countryFlag;*/
-
             google.charts.load('current', { 'packages': ['map'], 'mapsApiKey': 'AIzaSyCK0nnkg19MONGuo82bmvHMC4AUAlt_NRY' });
             google.charts.setOnLoadCallback(drawWorldMap);
 
@@ -26,13 +23,14 @@
 
                 worldMapDataTable.addColumn('number', 'Latitude');
                 worldMapDataTable.addColumn('number', 'Longitude');
+                /*worldMapDataTable.addColumn('string', 'Country Name');
+                worldMapDataTable.addColumn('string', 'Country Flag');*/
 
                 {{#each data}}
                     worldMapDataTable.addRows([
                         [{{countryItemLatitude}},{{countryItemLongitude}}],
+                        /*[{{countryItemLatitude}},{{countryItemLongitude}},'{{countryItemName}}','{{countryItemFlag}}'],*/
                     ]);
-                    /*countryName = "{{countryItemName}}";
-                    countryFlag = "{{countryItemFlag}}";*/
                 {{/each}}
 
                 worldMap.draw(worldMapDataTable, worldMapOptions);
@@ -46,14 +44,18 @@
 
                     if (selection.length > 0) {
                         var selectedCountryLatitude = data.getFormattedValue(selection[0].row, 0),
-                            selectedCountryLongitude = data.getFormattedValue(selection[0].row, 1);
+                            selectedCountryLongitude = data.getFormattedValue(selection[0].row, 1);/*,
+                            selectedCountryName = data.getFormattedValue(selection[0].row, 2),
+                            selectedCountryFlag = data.getFormattedValue(selection[0].row, 3);*/
 
                         drawCountryMap(selectedCountryLatitude, selectedCountryLongitude);
+                        /*drawCountryMap(selectedCountryLatitude, selectedCountryLongitude, selectedCountryName, selectedCountryFlag);*/
                     }
                 });
             }
 
             function drawCountryMap(selectedCountryLatitude, selectedCountryLongitude) {
+            /*function drawCountryMap(selectedCountryLatitude, selectedCountryLongitude, selectedCountryName, selectedCountryFlag) {*/
                 var countryMapOptions = {
                         zoomLevel: 5,
                         showTooltip: true,
@@ -68,8 +70,8 @@
                     },
                     countryMap = new google.visualization.Map(document.getElementById('js-country-map-container')),
                     countryMapDataTable = new google.visualization.DataTable(),
-                    latitudeLongitudeArray = [selectedCountryLatitude, selectedCountryLongitude].map(Number);
-                    /*countryMapHeading = document.getElementById("js-country-heading");*/
+                    latitudeLongitudeArray = [selectedCountryLatitude, selectedCountryLongitude].map(Number); /* ,
+                    countryMapHeading = document.getElementById("js-country-heading");*/
 
                 countryMapDataTable.addColumn('number', 'Latitude');
                 countryMapDataTable.addColumn('number', 'Longitude');
@@ -77,7 +79,7 @@
 
                 countryMap.draw(countryMapDataTable, countryMapOptions);
 
-                /*countryMapHeading.innerText = countryName;*/
+                /*countryMapHeading.innerText = selectedCountryName;*/
             }
         }());
     </script>
