@@ -2,8 +2,26 @@ body {
     font-family: 'Open Sans', sans-serif;
 }
 
+.map-container-heading,
+.country-flag {
+    display: inline-block;
+    margin: 0;
+    padding: 0;
+    vertical-align: middle;
+}
+
 .map-container {
     height: 500px;
     width: 900px;
 }
+
+.country-heading-flag-container {
+    margin: 10px 0;
+    width: 900px;
+}
+
+.country-flag {
+    height: 0;
+}
+
 

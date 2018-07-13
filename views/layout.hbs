@@ -43,10 +43,10 @@
                     var selection = worldMap.getSelection();
 
                     if (selection.length > 0) {
-                        var selectedCountryLatitude = data.getFormattedValue(selection[0].row, 0),
-                            selectedCountryLongitude = data.getFormattedValue(selection[0].row, 1);/*,
-                            selectedCountryName = data.getFormattedValue(selection[0].row, 2),
-                            selectedCountryFlag = data.getFormattedValue(selection[0].row, 3);*/
+                        var selectedCountryLatitude = data.getFormattedValue(selection[0].row, 0);
+                        var selectedCountryLongitude = data.getFormattedValue(selection[0].row, 1);
+                        /*var selectedCountryName = data.getFormattedValue(selection[0].row, 2);
+                        var selectedCountryFlag = data.getFormattedValue(selection[0].row, 3);*/
 
                         drawCountryMap(selectedCountryLatitude, selectedCountryLongitude);
                         /*drawCountryMap(selectedCountryLatitude, selectedCountryLongitude, selectedCountryName, selectedCountryFlag);*/
@@ -70,8 +70,10 @@
                     },
                     countryMap = new google.visualization.Map(document.getElementById('js-country-map-container')),
                     countryMapDataTable = new google.visualization.DataTable(),
-                    latitudeLongitudeArray = [selectedCountryLatitude, selectedCountryLongitude].map(Number); /* ,
-                    countryMapHeading = document.getElementById("js-country-heading");*/
+                    latitudeLongitudeArray = [selectedCountryLatitude, selectedCountryLongitude].map(Number);
+
+                /*var countryMapHeading = document.getElementById("js-country-heading"),
+                    countryMapFlag = document.getElementById("js-country-flag");*/
 
                 countryMapDataTable.addColumn('number', 'Latitude');
                 countryMapDataTable.addColumn('number', 'Longitude');
@@ -79,12 +81,23 @@
 
                 countryMap.draw(countryMapDataTable, countryMapOptions);
 
-                /*countryMapHeading.innerText = selectedCountryName;*/
+                /*countryMapHeading.innerText = selectedCountryName;
+                countryMapFlag.src = selectedCountryFlag;
+                countryMapFlag.style.height = '60px';*/
+
             }
         }());
     </script>
     </head>
     <body>
-        {{{body}}}
+        <h1>Where in the world can I use Xoom services?</h1>
+        <div id="js-world-map-container" class="map-container"></div>
+
+        <div class="country-heading-flag-container">
+            <h2 id="js-country-heading" class="map-container-heading"></h2>
+            <img id="js-country-flag" class="country-flag" src="" border="0" />
+        </div>
+
+        <div id="js-country-map-container" class="map-container"></div>
     </body>
 </html>
