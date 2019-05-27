@@ -23,14 +23,13 @@ module.exports = (data1, data2) => {
         }
     }
 
-    for (x in countryDataXoom.data.countries) {
-        countryDataXoomEntry = countryDataXoom.data.countries[x];
-
+    for (x in countryDataXoom.items) {
+        countryDataXoomEntry = countryDataXoom.items[x];
         const countryItem = {
-            countryItemCountryCode: countryDataXoomEntry.countryCode
+            countryItemCountryCode: countryDataXoomEntry.destination_country.code
         }
 
-        getAdditionalCountryInformation(countryDataXoomEntry.countryCode, countryItem);
+        getAdditionalCountryInformation(countryDataXoomEntry.destination_country.code, countryItem);
 
         countryItems.push(countryItem);
 

@@ -12,7 +12,7 @@ const countryDataModel = require('../viewModels/countryData');
 function getCountryData(callback) {
     /* axios is a node module that does x */
     axios.all([
-        axios.get('https://www.xoom.com/mapi/v2/countries'),
+        axios.get('https://api.xoom.com/v2/catalog/currency-channels?beta=false&page_size=500'),
         axios.get('http://countryapi.gear.host/v1/Country/getCountries')
     ]).then(axios.spread((response1, response2) => {
         return callback(null, response1, response2)
