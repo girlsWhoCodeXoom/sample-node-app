@@ -21,7 +21,30 @@ body {
 }
 
 .country-flag {
+    display: inline-table;
     height: 0;
+    margin-left: 10px;
+}
+
+svg {
+    height: 60px;
+    width: 90px;
+}
+
+input  {
+    border: 0px none;
+    box-shadow: rgba(0, 0, 0, 0.3) 0px 1px 4px -1px;
+    display: none;
+    border-radius: 2px;
+    font-family: Roboto, Arial, sans-serif;
+    font-size: 18px;
+    height: 40px;
+    margin-top: 10px;
+    padding: 0 17px;
+}
+
+#google-visualization-errors-all-1 {
+    display: none !important;
 }
 
 

@@ -4,6 +4,7 @@
     <link href="https://fonts.googleapis.com/css?family=Open+Sans" type="text/css" rel="stylesheet">
     <link href="/css/layout.css" type="text/css" rel="stylesheet" />
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?&key=AIzaSyDPybLgu5YO3Z0Cu1EmAYPfW-QM0aAiVLo&libraries=places"></script>
     <script type="text/javascript">
         (function () {
             "use strict";
@@ -16,26 +17,47 @@
                     zoomLevel: 2,
                     showTooltip: false,
                     showInfoWindow: false,
-                    useMapTypeControl: true
+                    useMapTypeControl: true,
+                    mapType: 'styledMap',
+                    mapTypeIds: ['styledMap'],
+                    maps: {
+                        styledMap: {
+                            name: 'Countries that Xoom Serves',
+                            styles: [
+                                {
+                                    featureType: 'road.highway',
+                                    stylers: [{hue: '#0277bd'}, {saturation: -50}]
+                                },
+                                {
+                                    featureType: 'road.highway', elementType: 'labels.icon',
+                                    stylers: [{hue: '#000'}, {saturation: 100}, {lightness: 50}]
+                                },
+                                {
+                                    featureType: 'landscape',
+                                    stylers: [{hue: '#259b24'}, {saturation: 10}, {lightness: -22}]
+                                }
+                            ]
+                        }
+                    }
                     },
                     worldMap = new google.visualization.Map(document.getElementById('js-world-map-container')),
                     worldMapDataTable = new google.visualization.DataTable();
 
                 worldMapDataTable.addColumn('number', 'Latitude');
                 worldMapDataTable.addColumn('number', 'Longitude');
-                /*worldMapDataTable.addColumn('string', 'Country Name');
-                worldMapDataTable.addColumn('string', 'Country Flag');*/
+                worldMapDataTable.addColumn('string', 'Country Name');
+                worldMapDataTable.addColumn('string', 'Country Flag');
 
                 {{#each data}}
                     worldMapDataTable.addRows([
-                        [{{countryItemLatitude}},{{countryItemLongitude}}],
-                        /*[{{countryItemLatitude}},{{countryItemLongitude}},'{{countryItemName}}','{{countryItemFlag}}'],*/
+                        [{{countryItemLatitude}},{{countryItemLongitude}},'{{countryItemName}}','{{countryItemFlag}}'],
                     ]);
                 {{/each}}
 
                 worldMap.draw(worldMapDataTable, worldMapOptions);
 
-                addListenerToWorldMap(worldMap, worldMapDataTable);
+                //UNCOMMENT BELOW TO RENDER INDIVIDUAL COUNTRY MAPS ON SELECTION
+                //addListenerToWorldMap(worldMap, worldMapDataTable);
             }
 
             function addListenerToWorldMap(worldMap, data) {
@@ -43,59 +65,108 @@
                     var selection = worldMap.getSelection();
 
                     if (selection.length > 0) {
-                        var selectedCountryLatitude = data.getFormattedValue(selection[0].row, 0);
-                        var selectedCountryLongitude = data.getFormattedValue(selection[0].row, 1);
-                        /*var selectedCountryName = data.getFormattedValue(selection[0].row, 2);
-                        var selectedCountryFlag = data.getFormattedValue(selection[0].row, 3);*/
+                        var selectedCountryLatitude = data.getFormattedValue(selection[0].row, 0),
+                            selectedCountryLongitude = data.getFormattedValue(selection[0].row, 1),
+                            selectedCountryName = data.getFormattedValue(selection[0].row, 2),
+                            selectedCountryFlag = data.getFormattedValue(selection[0].row, 3);
 
-                        drawCountryMap(selectedCountryLatitude, selectedCountryLongitude);
-                        /*drawCountryMap(selectedCountryLatitude, selectedCountryLongitude, selectedCountryName, selectedCountryFlag);*/
+                        drawCountryMap(selectedCountryLatitude, selectedCountryLongitude, selectedCountryName, selectedCountryFlag);
                     }
                 });
             }
 
-            function drawCountryMap(selectedCountryLatitude, selectedCountryLongitude) {
-            /*function drawCountryMap(selectedCountryLatitude, selectedCountryLongitude, selectedCountryName, selectedCountryFlag) {*/
-                var countryMapOptions = {
-                        zoomLevel: 5,
-                        showTooltip: true,
-                        showInfoWindow: true,
-                        useMapTypeControl: true,
-                        icons: {
-                            default: {
-                                normal: 'https://icons.iconarchive.com/icons/icons-land/vista-map-markers/48/Map-Marker-Ball-Azure-icon.png',
-                                selected: 'https://icons.iconarchive.com/icons/icons-land/vista-map-markers/48/Map-Marker-Ball-Right-Azure-icon.png'
-                            }
-                        },
-                    },
-                    countryMap = new google.visualization.Map(document.getElementById('js-country-map-container')),
-                    countryMapDataTable = new google.visualization.DataTable(),
-                    latitudeLongitudeArray = [selectedCountryLatitude, selectedCountryLongitude].map(Number);
+            function drawCountryMap(selectedCountryLatitude, selectedCountryLongitude, selectedCountryName, selectedCountryFlag) {
+                var countryMap = new google.maps.Map(document.getElementById('js-country-map-container'),{
+                        center: {lat: parseInt(selectedCountryLatitude), lng: parseInt(selectedCountryLongitude)},
+                        zoom: 5,
+                        mapTypeId: 'roadmap'
+                    }),
+                    countryMapHeading = document.getElementById("js-country-heading"),
+                    countryMapFlag = document.getElementById("js-country-flag");
 
-                /*var countryMapHeading = document.getElementById("js-country-heading"),
-                    countryMapFlag = document.getElementById("js-country-flag");*/
+                countryMapHeading.innerText = selectedCountryName;
 
-                countryMapDataTable.addColumn('number', 'Latitude');
-                countryMapDataTable.addColumn('number', 'Longitude');
-                countryMapDataTable.addRow(latitudeLongitudeArray);
+                // Make an AJAX request to load the flag as an inline SVG element so that we can animate it
+                var xhr = new XMLHttpRequest();
+                xhr.open("GET", selectedCountryFlag, false);
+                xhr.send("");
+                countryMapFlag.appendChild(xhr.responseXML.documentElement);
 
-                countryMap.draw(countryMapDataTable, countryMapOptions);
+                //UNCOMMENT BELOW TO ADD PLACES SEARCH TO THE COUNTRY MAP
+                //addPlaces(countryMap);
+            }
 
-                /*countryMapHeading.innerText = selectedCountryName;
-                countryMapFlag.src = selectedCountryFlag;
-                countryMapFlag.style.height = '60px';*/
+            function addPlaces(countryMap) {
+                var input = document.createElement("input"),
+                searchBox = new google.maps.places.SearchBox(input);
+                countryMap.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
+
+                input.style.display = "block";
+
+                // Bias the SearchBox results towards current map's viewport.
+                countryMap.addListener('bounds_changed', function () {
+                    searchBox.setBounds(countryMap.getBounds());
+                });
+
+                var markers = [];
+                // Listen for the event fired when the user selects a prediction and retrieve
+                // more details for that place.
+                searchBox.addListener('places_changed', function () {
+                    var places = searchBox.getPlaces();
+
+                    if (places.length == 0) {
+                        return;
+                    }
+
+                    // Clear out the old markers.
+                    markers.forEach(function (marker) {
+                        marker.setMap(null);
+                    });
+                    markers = [];
+
+                    // For each place, get the icon, name and location.
+                    var bounds = new google.maps.LatLngBounds();
+                    places.forEach(function (place) {
+                        if (!place.geometry) {
+                            console.log("Returned place contains no geometry");
+                            return;
+                        }
+                        var icon = {
+                            url: place.icon,
+                            size: new google.maps.Size(71, 71),
+                            origin: new google.maps.Point(0, 0),
+                            anchor: new google.maps.Point(17, 34),
+                            scaledSize: new google.maps.Size(25, 25)
+                        };
+
+                        // Create a marker for each place.
+                        markers.push(new google.maps.Marker({
+                            map: countryMap,
+                            icon: icon,
+                            title: place.name,
+                            position: place.geometry.location
+                        }));
+
+                        if (place.geometry.viewport) {
+                            // Only geocodes have viewport.
+                            bounds.union(place.geometry.viewport);
+                        } else {
+                            bounds.extend(place.geometry.location);
+                        }
+                    });
+                    countryMap.fitBounds(bounds);
+                });
 
             }
         }());
     </script>
     </head>
     <body>
-        <h1>Where in the world can I use Xoom services?</h1>
         <div id="js-world-map-container" class="map-container"></div>
 
         <div class="country-heading-flag-container">
             <h2 id="js-country-heading" class="map-container-heading"></h2>
-            <img id="js-country-flag" class="country-flag" src="" border="0" />
+            <span id="js-country-flag" class="country-flag" />
         </div>
 
         <div id="js-country-map-container" class="map-container"></div>
