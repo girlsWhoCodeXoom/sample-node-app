@@ -85,12 +85,9 @@
                     countryMapFlag = document.getElementById("js-country-flag");
 
                 countryMapHeading.innerText = selectedCountryName;
-
-                // Make an AJAX request to load the flag as an inline SVG element so that we can animate it
-                var xhr = new XMLHttpRequest();
-                xhr.open("GET", selectedCountryFlag, false);
-                xhr.send("");
-                countryMapFlag.appendChild(xhr.responseXML.documentElement);
+                countryMapHeading.innerText = selectedCountryName;
+                countryMapFlag.src = selectedCountryFlag;
+                countryMapFlag.style.height = '60px';
 
                 //UNCOMMENT BELOW TO ADD PLACES SEARCH TO THE COUNTRY MAP
                 //addPlaces(countryMap);
@@ -166,7 +163,7 @@
 
         <div class="country-heading-flag-container">
             <h2 id="js-country-heading" class="map-container-heading"></h2>
-            <span id="js-country-flag" class="country-flag" />
+            <img id="js-country-flag" class="country-flag" src="" border="0"/>
         </div>
 
         <div id="js-country-map-container" class="map-container"></div>
