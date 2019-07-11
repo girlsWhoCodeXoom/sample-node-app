@@ -3,6 +3,7 @@
     <head>
     <link href="https://fonts.googleapis.com/css?family=Open+Sans" type="text/css" rel="stylesheet">
     <link href="/css/layout.css" type="text/css" rel="stylesheet" />
+    <script type="text/javascript" src="/js/mapStyles.js"></script>
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
     <script src="https://maps.googleapis.com/maps/api/js?&key=AIzaSyDPybLgu5YO3Z0Cu1EmAYPfW-QM0aAiVLo&libraries=places"></script>
     <script type="text/javascript">
@@ -23,20 +24,6 @@
                     maps: {
                         styledMap: {
                             name: 'Countries that Xoom Serves',
-                            styles: [
-                                {
-                                    featureType: 'road.highway',
-                                    stylers: [{hue: '#0277bd'}, {saturation: -50}]
-                                },
-                                {
-                                    featureType: 'road.highway', elementType: 'labels.icon',
-                                    stylers: [{hue: '#000'}, {saturation: 100}, {lightness: 50}]
-                                },
-                                {
-                                    featureType: 'landscape',
-                                    stylers: [{hue: '#259b24'}, {saturation: 10}, {lightness: -22}]
-                                }
-                            ]
                         }
                     }
                     },
@@ -57,7 +44,7 @@
                 worldMap.draw(worldMapDataTable, worldMapOptions);
 
                 //UNCOMMENT BELOW TO RENDER INDIVIDUAL COUNTRY MAPS ON SELECTION
-                addListenerToWorldMap(worldMap, worldMapDataTable);
+                //addListenerToWorldMap(worldMap, worldMapDataTable);
             }
 
             function addListenerToWorldMap(worldMap, data) {
@@ -79,7 +66,8 @@
                 var countryMap = new google.maps.Map(document.getElementById('js-country-map-container'),{
                         center: {lat: parseInt(selectedCountryLatitude), lng: parseInt(selectedCountryLongitude)},
                         zoom: 5,
-                        mapTypeId: 'roadmap'
+                        //UNCOMMENT BELOW TO ACTIVATE CUSTOM MAP STYLES AND EDIT COLORS YOURSELF IN /public/js/mapStyles.js
+                        //styles: mapStyles
                     }),
                     countryMapHeading = document.getElementById("js-country-heading"),
                     countryMapFlag = document.getElementById("js-country-flag");
@@ -88,6 +76,10 @@
                 countryMapHeading.innerText = selectedCountryName;
                 countryMapFlag.src = selectedCountryFlag;
                 countryMapFlag.style.height = '60px';
+
+                //UNCOMMENT BELOW TO REVEAL REAL-TIME TRAFFIC INFORMATION WHERE SUPPORTED
+                //var trafficLayer = new google.maps.TrafficLayer();
+                //trafficLayer.setMap(countryMap);
 
                 //UNCOMMENT BELOW TO ADD PLACES SEARCH TO THE COUNTRY MAP
                 //addPlaces(countryMap);
