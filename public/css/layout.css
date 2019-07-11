@@ -21,14 +21,9 @@ body {
 }
 
 .country-flag {
-    display: inline-table;
+    border: 1px solid #999;
     height: 0;
     margin-left: 10px;
-}
-
-svg {
-    height: 60px;
-    width: 90px;
 }
 
 input  {
